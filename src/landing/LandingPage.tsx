@@ -1,3 +1,4 @@
+import type { MouseEvent } from 'react'
 import {
   ArrowDown,
   ArrowRight,
@@ -21,6 +22,21 @@ const thanksUrl =
 const showThanks =
   typeof window !== 'undefined' &&
   new URLSearchParams(window.location.search).get('gracias') === '1'
+
+function jumpToForm(targetId: string) {
+  return (e: MouseEvent<HTMLAnchorElement>) => {
+    const el = document.getElementById(targetId)
+    if (!el) return
+    e.preventDefault()
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    window.setTimeout(() => {
+      const input = el.querySelector<HTMLInputElement>(
+        'input:not([type="hidden"]):not([name="_honey"])',
+      )
+      input?.focus({ preventScroll: true })
+    }, 500)
+  }
+}
 
 export function LandingPage() {
   return (
@@ -59,7 +75,8 @@ export function LandingPage() {
             </p>
             <div className="mt-9 flex flex-wrap gap-3">
               <a
-                href="#acceso"
+                href="#transportista"
+                onClick={jumpToForm('transportista')}
                 className="inline-flex items-center gap-2 rounded-lg px-6 py-3.5 text-[15px] font-medium transition-opacity hover:opacity-90"
                 style={{ background: LIME, color: BRAND }}
               >
@@ -67,7 +84,8 @@ export function LandingPage() {
                 Soy transportista
               </a>
               <a
-                href="#acceso"
+                href="#empresa"
+                onClick={jumpToForm('empresa')}
                 className="inline-flex items-center gap-2 rounded-lg border border-white/30 px-6 py-3.5 text-[15px] font-medium text-white transition-colors hover:border-white/60"
               >
                 <Package size={18} strokeWidth={1.5} />
@@ -153,7 +171,7 @@ export function LandingPage() {
           </div>
         </div>
 
-        <div id="acceso" className="mx-auto max-w-6xl px-5 pb-24 pt-16 md:px-10 md:pb-32 md:pt-24">
+        <div id="acceso" className="mx-auto max-w-6xl px-5 pb-[40vh] pt-16 md:px-10 md:pb-32 md:pt-24">
           <p
             className="text-[11px] font-medium uppercase tracking-[0.14em]"
             style={{ color: LIME }}
@@ -169,6 +187,7 @@ export function LandingPage() {
 
           <div className="mt-10 grid gap-5 md:grid-cols-2 md:gap-6">
             <FormCard
+              id="transportista"
               Icon={Truck}
               title="Soy transportista"
               subtitle="Quiero encontrar cargas para mis retornos"
@@ -180,6 +199,7 @@ export function LandingPage() {
               ]}
             />
             <FormCard
+              id="empresa"
               Icon={Package}
               title="Tengo cargas"
               subtitle="Quiero conectarme con transportistas"
@@ -239,11 +259,13 @@ function Step({ n, title, text }: { n: string; title: string; text: string }) {
 type Field = { label: string; name: string; placeholder: string; type?: string }
 
 function FormCard({
+  id,
   Icon,
   title,
   subtitle,
   fields,
 }: {
+  id: string
   Icon: IconType
   title: string
   subtitle: string
@@ -251,9 +273,10 @@ function FormCard({
 }) {
   return (
     <form
+      id={id}
       action={FORM_ENDPOINT}
       method="POST"
-      className="rounded-xl border border-white/10 bg-white/[0.04] p-6 md:p-7"
+      className="scroll-mt-8 rounded-xl border border-white/10 bg-white/[0.04] p-6 md:scroll-mt-12 md:p-7"
     >
       <input type="hidden" name="_subject" value={`Acceso anticipado — ${title}`} />
       <input type="hidden" name="_template" value="table" />
