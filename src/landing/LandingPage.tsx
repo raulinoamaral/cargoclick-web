@@ -15,7 +15,7 @@ const LIME = '#d2df64'
 const BLUE = '#2621f0'
 const OFFWHITE = '#f7f7f5'
 
-const FORM_ENDPOINT = 'https://formsubmit.co/cargoclick.uy@gmail.com'
+const FORM_ENDPOINT = 'https://formsubmit.co/53769098b029e57422174b9cf1f9854f'
 
 const thanksUrl =
   typeof window !== 'undefined' ? `${window.location.origin}/?gracias=1` : ''
